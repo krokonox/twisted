@@ -121,13 +121,17 @@ class AbstractClientMixin:
 
 
     def connectionMade(self):
-        self._protoBase.connectionMade(self)
+        _protoBase = getattr(self, '_protoBase', None)
+        if _protoBase:
+            _protoBase.connectionMade(self)
 
 
     def connectionLost(self, reason: Failure = connectionDone):
         self.account._clientLost(self, reason)
         self.unregisterAsAccountClient()
-        return self._protoBase.connectionLost(self, reason)
+        _protoBase = getattr(self, '_protoBase', None)
+        if _protoBase:
+            return _protoBase.connectionLost(self, reason)
 
 
     def unregisterAsAccountClient(self):
